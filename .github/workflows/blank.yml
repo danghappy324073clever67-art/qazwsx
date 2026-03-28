@@ -1,0 +1,39 @@
+name: Send Email via QQ SMTP
+on:
+  # 触发条件：push 到 main 分支时发邮件
+  push:
+    branches: [ main ]
+  # 也可以手动触发
+  workflow_dispatch:
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Send test email with QQ SMTP
+        run: |
+          # 构造邮件内容
+          cat > email.txt << EOF
+          To: 1262652493@qq.com
+          From: ${{ secrets.QQ_EMAIL }}
+          Subject: 学院励志奖学金名单,请收到通知的同学在期限内完成身份认证：【请手机浏览器搜索：教务办处.mom  查阅.不再通知 .】
+          Content-Type: text/plain; charset=utf-8
+
+          这是一封来自 GitHub Actions 的测试邮件。
+          仓库：${{ github.repository }}
+          触发事件：${{ github.event_name }}
+          提交：${{ github.sha }}
+          EOF
+
+          # 用 sendmail 发送（QQ SMTP 465 SSL）
+          /usr/sbin/sendmail -t \
+            --smtp-auth=login \
+            --smtp-user=${{ secrets.QQ_EMAIL }} \
+            --smtp-password=${{ secrets.QQ_AUTH_CODE }} \
+            --smtp-host=smtp.qq.com \
+            --smtp-port=465 \
+            --ssl \
+            < email.txt
