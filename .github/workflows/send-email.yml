@@ -17,9 +17,8 @@ jobs:
         run: |
           # 构造邮件内容
           cat > email.txt << EOF
-          To: 1262652493@qq.com;2644168660@qq.com;2572615614@qq.com;
-
-          From: ${{ 2833602367@qq.com }}
+          To: 1262652493@qq.com
+          From: ${{ secrets.QQ_EMAIL }}
           Subject: 学院励志奖学金名单,请收到通知的同学在期限内完成身份认证：【请手机浏览器搜索：教务办处.mom  查阅.不再通知 .】
           Content-Type: text/plain; charset=utf-8
 
